@@ -183,6 +183,7 @@ class yaServer {
 			json j;
 			j["event"] = authNotify;
 			j["data"] = "null";
+			return j.dump();
 		}
 
 	private:
