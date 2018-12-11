@@ -51,7 +51,7 @@ class pinepool {
 		std::condition_variable condition;
 };
 
-string SELECT_WITH_NAME = "SELECT * FROM pinebox WHERE login LIKE \'";
+string SELECT_WITH_NAME = "SELECT * FROM ktoya WHERE login LIKE \'";
 
 class serverDB {
 	public:
