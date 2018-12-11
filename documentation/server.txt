@@ -1,0 +1,28 @@
+This server using json message for communication.
+
+You can set status of relay via message:
+
+{
+	"event":"set",
+	"data":"status": true/false
+}
+
+After it you get response:
+
+{
+	"event":"response",
+	"data":"response":"ok"
+}
+
+And you can get status for relay via message:
+
+{
+	"event":"get"
+}
+
+After it you get response:
+
+{
+	"event":"status",
+	"data":"status": true/false
+}
