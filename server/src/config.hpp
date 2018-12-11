@@ -35,6 +35,12 @@ using websocketpp::lib::unique_lock;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
+/* Global variable */
+const int connectionsCount = 10;
+
+
+#include "account.hpp"
+#include "serverDB.hpp"
 #include "server.hpp"
 
 
