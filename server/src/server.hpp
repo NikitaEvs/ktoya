@@ -165,9 +165,18 @@ class yaServer {
 					outMsg["data"] = negative;
 				}
 			} else if(event == "set") {
-				currentRelay[0] = std::make_pair(1, inMsg["data"]["status"]);
-				outMsg["event"] = "response";
-				outMsg["data"]["response"] = "ok";
+				account log = serverDB.getServerViaRegData(inMsg["data"]["login"], inMsg["data"]["pass"]);
+				if(log.token != -1) {
+					std::cout << "Login success!" << std::endl;
+					currentRelay[0] = std::make_pair(1, inMsg["data"]["status"]);
+					outMsg["event"] = "response";
+					outMsg["data"]["response"] = "ok";
+				} else {
+					std::cout << "Login failed!" << std::endl;
+					outMsg["event"] = "response";
+					outMsg["data"]["response"] = "fail";
+				}
+				
 			} else if(event == "get") {
 				outMsg["event"] = "status";
 				outMsg["data"]["status"] = currentRelay[0].second;
