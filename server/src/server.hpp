@@ -134,7 +134,7 @@ class yaServer {
 					std::cout << "NEW CONNECTION" << std::endl;
 					lock_guard<mutex> guard(connection_lock);
 					websocketpp::lib::error_code errCode;
-
+					currentServer.send(action.handler, createAuthReq(), websocketpp::frame::opcode::text, errCode);
 				} else if(action.type == UNSUBSCRIBE){
 					std::cout << "CLOSE CONNECTION" << std::endl;
 					lock_guard<mutex> guard(connection_lock);
