@@ -36,7 +36,7 @@ class yaServer {
 		/* Simple init server with handlers */
 		yaServer() {
 			configure();
-			readConfigureFile();
+			//readConfigureFile();
 		}
 		
 		/* Server initialization */
@@ -49,12 +49,13 @@ class yaServer {
 			currentServer.set_message_handler(bind(&yaServer::on_message, this, ::_1, ::_2));
 			std::cout << "Setting conditions..." << std::endl;
 			currentServer.set_reuse_addr(true); // For fixing problem "Address already in use" (not work :C)
-			currentRelay.push_back(std::make_pair(1, false));
+			
+			/*currentRelay.push_back(std::make_pair(1, false));
 			std::cout << "Initialization pool..." << std::endl;
 			std::shared_ptr<pinepool> poolCurrent(new pinepool);
 			pool = poolCurrent;
 			serverDB configServer;
-			pool.get() -> createPool(connectionsCount, configServer.getConnectionCommand());
+			pool.get() -> createPool(connectionsCount, configServer.getConnectionCommand());*/
 		}
 		
 		/* Read and parse configure file for database, use it in advance */
@@ -133,7 +134,7 @@ class yaServer {
 					std::cout << "NEW CONNECTION" << std::endl;
 					lock_guard<mutex> guard(connection_lock);
 					websocketpp::lib::error_code errCode;
-					currentServer.send(action.handler, createAuthReq(), websocketpp::frame::opcode::text, errCode);
+
 				} else if(action.type == UNSUBSCRIBE){
 					std::cout << "CLOSE CONNECTION" << std::endl;
 					lock_guard<mutex> guard(connection_lock);
@@ -151,35 +152,16 @@ class yaServer {
 			std::cout << "Received message: " << jsonStr << std::endl;
 			json inMsg = json::parse(jsonStr);
 			json outMsg;
-			serverDB configPinebase;
-			serverDB serverDB(pool);
 			string event = inMsg["event"];
 			if(event == authReq) {
-				outMsg["event"] = authResp;
-				account log = serverDB.getServerViaRegData(inMsg["data"]["login"], inMsg["data"]["pass"]);
-				if(log.token != -1) {
-					std::cout << "Login success!" << std::endl;
-					outMsg["data"] = positive;
-				} else {
-					std::cout << "Login failed!" << std::endl;
-					outMsg["data"] = negative;
-				}
+				// @@
 			} else if(event == "set") {
-				account log = serverDB.getServerViaRegData(inMsg["data"]["login"], inMsg["data"]["pass"]);
-				if(log.token != -1) {
-					std::cout << "Login success!" << std::endl;
-					currentRelay[0] = std::make_pair(1, inMsg["data"]["status"]);
-					outMsg["event"] = "response";
-					outMsg["data"]["response"] = "ok";
-				} else {
-					std::cout << "Login failed!" << std::endl;
-					outMsg["event"] = "response";
-					outMsg["data"]["response"] = "fail";
-				}
-				
+				status = inMsg["data"]["status"];
+				outMsg["event"] = "response";
+				outMsg["data"]["response"] = "ok";	
 			} else if(event == "get") {
 				outMsg["event"] = "status";
-				outMsg["data"]["status"] = currentRelay[0].second;
+				outMsg["data"]["status"] = status;
 			} else {
 				outMsg["event"] = "error";
 				outMsg["data"]["response"] = "unknown request";
@@ -201,9 +183,8 @@ class yaServer {
 		mutex connection_lock;
 		std::queue<action> actions;
 		condition_variable action_cond;
-		std::shared_ptr<pinepool> pool; // Pool for connections, each pinebase include shared_ptr of pinepool
-		std::vector<std::pair<int, bool> > currentRelay;
-		int port;
+		bool status = false;
+		int port = 8080;
 };
 
 

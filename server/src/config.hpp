@@ -8,7 +8,6 @@
 #include <fstream>
 #include <string>
 #include "json/json.hpp"
-#include <pqxx/pqxx>
 #include <memory>
 #include <mutex>
 #include <queue>
@@ -35,12 +34,6 @@ using websocketpp::lib::unique_lock;
 
 typedef websocketpp::server<websocketpp::config::asio> server;
 
-/* Global variable */
-const int connectionsCount = 10;
-
-
-#include "account.hpp"
-#include "serverDB.hpp"
 #include "server.hpp"
 
 
